@@ -482,45 +482,45 @@ export default {
 <body>
     <div class="container">
         <img class="wechat-icon" src="wechat.svg" alt="WeChat">
-        <h1 class="title">${mapping。name ? mapping。name : '微信二维码'}</h1>
+        <h1 class="title">${mapping.name ? mapping.name : '微信二维码'}</h1>
         <p class="notice">请长按识别下方二维码</p>
-        <img class="qr-code" src="${mapping。qrCodeData}" alt="微信群二维码">
+        <img class="qr-code" src="${mapping.qrCodeData}" alt="微信群二维码">
         <p class="footer">二维码失效请联系作者微信weilizhi更新</p>
     </div>
 </body>
 </html>`;
-            return new Response(wechatHtml， {
+            return new Response(wechatHtml, {
               headers: {
-                'Content-Type': 'text/html;charset=UTF-8'，
+                'Content-Type': 'text/html;charset=UTF-8',
                 'Cache-Control': 'no-store'
               }
             });
           }
 
           // 如果不是微信二维码，执行普通重定向
-          return Response。redirect(mapping。target， 302);
+          return Response.redirect(mapping.target, 302);
         }
-        return new Response('Not Found'， { status: 404 });
+        return new Response('Not Found', { status: 404 });
       } catch (error) {
-        console。error('Redirect error:'， error);
-        return new Response('Internal Server Error'， { status: 500 });
+        console.error('Redirect error:', error);
+        return new Response('Internal Server Error', { status: 500 });
       }
     }
-  }，
+  },
 
-  async scheduled(controller， env， ctx) {
-    KV_BINDING = env。KV_BINDING;
+  async scheduled(controller, env, ctx) {
+    KV_BINDING = env.KV_BINDING;
     const result = await getExpiringMappings();
 
-    console。log(`Cron job report: Found ${result。expired。length} expired mappings`);
-    if (result。expired。length > 0) {
-      console。log('Expired mappings:'， JSON。stringify(result。expired， null， 2));
+    console.log(`Cron job report: Found ${result.expired.length} expired mappings`);
+    if (result.expired.length > 0) {
+      console.log('Expired mappings:', JSON.stringify(result.expired, null, 2));
     }
 
-    console。log(`Found ${result。expiring。length} mappings expiring 2 天之内`);
-    if (result。expiring。length > 0) {
-      console。log('Expiring soon mappings:'， JSON。stringify(result。expiring， null， 2));
+    console.log(`Found ${result.expiring.length} mappings expiring in 2 days`);
+    if (result.expiring.length > 0) {
+      console.log('Expiring soon mappings:', JSON.stringify(result.expiring, null, 2));
     }
-  }，
+  },
 
 };
