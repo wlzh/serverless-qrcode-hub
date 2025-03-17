@@ -1,43 +1,43 @@
 let KV_BINDING;
 const banPath = [
-  'login', 'admin', '__total_count',
+  'login'， 'admin'， '__total_count'，
   // static files
-  'admin.html', 'login.html',
-  'daisyui@5.css', 'tailwindcss@4.js',
-  'qr-code-styling.js', 'zxing.js',
-  'robots.txt', 'wechat.svg',
-  'favicon.svg',
+  'admin.html'， 'login.html'，
+  'daisyui@5.css'， 'tailwindcss@4.js'，
+  'qr-code-styling.js'， 'zxing.js'，
+  'robots.txt'， 'wechat.svg'，
+  'favicon.svg'，
 ];
 
 // Cookie 相关函数
-function verifyAuthCookie(request, env) {
-  const cookie = request.headers.get('Cookie') || '';
-  const authToken = cookie.split(';').find(c => c.trim().startsWith('token='));
+function verifyAuthCookie(request， env) {
+  const cookie = request。headers。get('Cookie') || '';
+  const authToken = cookie。split(';')。find(c => c。trim()。startsWith('token='));
   if (!authToken) return false;
-  return authToken.split('=')[1].trim() === env.PASSWORD;
+  return authToken。split('=')[1]。trim() === env。PASSWORD;
 }
 
 function setAuthCookie(password) {
   return {
-    'Set-Cookie': `token=${password}; Path=/; HttpOnly; SameSite=Strict; Max-Age=86400`,
+    'Set-Cookie': `token=${password}; Path=/; HttpOnly; SameSite=Strict; Max-Age=86400`，
     'Content-Type': 'application/json'
   };
 }
 
 function clearAuthCookie() {
   return {
-    'Set-Cookie': 'token=; Path=/; HttpOnly; SameSite=Strict; Max-Age=0',
+    'Set-Cookie': 'token=; Path=/; HttpOnly; SameSite=Strict; Max-Age=0'，
     'Content-Type': 'application/json'
   };
 }
 
 // KV 操作相关函数
-async function listMappings(page = 1, pageSize = 10) {
+async function listMappings(page = 1， pageSize = 10) {
   const TOTAL_COUNT_KEY = "__total_count";
   let count;
 
   try {
-    count = await KV_BINDING.get(TOTAL_COUNT_KEY, { type: "json" });
+    count = await KV_BINDING。get(TOTAL_COUNT_KEY， { type: "json" });
   } catch (e) {
     count = null;
   }
@@ -51,25 +51,25 @@ async function listMappings(page = 1, pageSize = 10) {
     let processedCount = 0;
 
     do {
-      const listResult = await KV_BINDING.list({ cursor, limit: Math.min(1000, skip + pageSize) });
+      const listResult = await KV_BINDING。list({ cursor， limit: Math。min(1000， skip + pageSize) });
 
-      for (const key of listResult.keys) {
+      for (const key of listResult。keys) {
         // 跳过 banPath 中的路径
-        if (!banPath.includes(key.name)) {
-          if (processedCount >= skip && Object.keys(mappings).length < pageSize) {
-            const value = await KV_BINDING.get(key.name, { type: "json" });
-            mappings[key.name] = value;
+        if (!banPath。includes(key。name)) {
+          if (processedCount >= skip && Object。keys(mappings)。length < pageSize) {
+            const value = await KV_BINDING。get(key。name， { type: "json" });
+            mappings[key。name] = value;
           }
           processedCount++;
         }
       }
 
-      cursor = listResult.cursor;
+      cursor = listResult。cursor;
       if (count === null && cursor) {
-        const remaining = await KV_BINDING.list({ cursor, limit: 1000 });
+        const remaining = await KV_BINDING。list({ cursor， limit: 1000 });
         // 计算剩余有效记录数（排除 banPath）
-        processedCount += remaining.keys.filter(key => !banPath.includes(key.name)).length;
-        cursor = remaining.cursor;
+        processedCount += remaining。keys。filter(key => !banPath。includes(key。name))。length;
+        cursor = remaining。cursor;
       }
     } while (cursor && Object.keys(mappings).length < pageSize);
 
@@ -482,34 +482,34 @@ export default {
 <body>
     <div class="container">
         <img class="wechat-icon" src="wechat.svg" alt="WeChat">
-        <h1 class="title">${mapping.name ? mapping.name : '微信二维码'}</h1>
+        <h1 class="title">${mapping。name ? mapping。name : '微信二维码'}</h1>
         <p class="notice">请长按识别下方二维码</p>
-        <img class="qr-code" src="${mapping.qrCodeData}" alt="微信群二维码">
-        <p class="footer">二维码失效请联系作者更新</p>
+        <img class="qr-code" src="${mapping。qrCodeData}" alt="微信群二维码">
+        <p class="footer">二维码失效请添加作者微信weilizhi更新</p>
     </div>
 </body>
 </html>`;
-            return new Response(wechatHtml, {
+            return new Response(wechatHtml， {
               headers: {
-                'Content-Type': 'text/html;charset=UTF-8',
+                'Content-Type': 'text/html;charset=UTF-8'，
                 'Cache-Control': 'no-store'
               }
             });
           }
 
           // 如果不是微信二维码，执行普通重定向
-          return Response.redirect(mapping.target, 302);
+          return Response。redirect(mapping。target， 302);
         }
-        return new Response('Not Found', { status: 404 });
+        return new Response('Not Found'， { status: 404 });
       } catch (error) {
-        console.error('Redirect error:', error);
-        return new Response('Internal Server Error', { status: 500 });
+        console。error('Redirect error:'， error);
+        return new Response('Internal Server Error'， { status: 500 });
       }
     }
-  },
+  }，
 
-  async scheduled(controller, env, ctx) {
-    KV_BINDING = env.KV_BINDING;
+  async scheduled(controller， env， ctx) {
+    KV_BINDING = env。KV_BINDING;
     const result = await getExpiringMappings();
 
     console.log(`Cron job report: Found ${result.expired.length} expired mappings`);
