@@ -1,43 +1,43 @@
 let KV_BINDING;
 const banPath = [
-  'login'， 'admin'， '__total_count'，
+  'login', 'admin', '__total_count',
   // static files
-  'admin.html'， 'login.html'，
-  'daisyui@5.css'， 'tailwindcss@4.js'，
-  'qr-code-styling.js'， 'zxing.js'，
-  'robots.txt'， 'wechat.svg'，
-  'favicon.svg'，
+  'admin.html', 'login.html',
+  'daisyui@5.css', 'tailwindcss@4.js',
+  'qr-code-styling.js', 'zxing.js',
+  'robots.txt', 'wechat.svg',
+  'favicon.svg',
 ];
 
 // Cookie 相关函数
-function verifyAuthCookie(request， env) {
-  const cookie = request。headers。get('Cookie') || '';
-  const authToken = cookie。split(';')。find(c => c。trim()。startsWith('token='));
+function verifyAuthCookie(request, env) {
+  const cookie = request.headers.get('Cookie') || '';
+  const authToken = cookie.split(';').find(c => c.trim().startsWith('token='));
   if (!authToken) return false;
-  return authToken。split('=')[1]。trim() === env。PASSWORD;
+  return authToken.split('=')[1].trim() === env.PASSWORD;
 }
 
 function setAuthCookie(password) {
   return {
-    'Set-Cookie': `token=${password}; Path=/; HttpOnly; SameSite=Strict; Max-Age=86400`，
+    'Set-Cookie': `token=${password}; Path=/; HttpOnly; SameSite=Strict; Max-Age=86400`,
     'Content-Type': 'application/json'
   };
 }
 
 function clearAuthCookie() {
   return {
-    'Set-Cookie': 'token=; Path=/; HttpOnly; SameSite=Strict; Max-Age=0'，
+    'Set-Cookie': 'token=; Path=/; HttpOnly; SameSite=Strict; Max-Age=0',
     'Content-Type': 'application/json'
   };
 }
 
 // KV 操作相关函数
-async function listMappings(page = 1， pageSize = 10) {
+async function listMappings(page = 1, pageSize = 10) {
   const TOTAL_COUNT_KEY = "__total_count";
   let count;
 
   try {
-    count = await KV_BINDING。get(TOTAL_COUNT_KEY， { type: "json" });
+    count = await KV_BINDING.get(TOTAL_COUNT_KEY, { type: "json" });
   } catch (e) {
     count = null;
   }
@@ -51,25 +51,25 @@ async function listMappings(page = 1， pageSize = 10) {
     let processedCount = 0;
 
     do {
-      const listResult = await KV_BINDING。list({ cursor， limit: Math。min(1000， skip + pageSize) });
+      const listResult = await KV_BINDING.list({ cursor, limit: Math.min(1000, skip + pageSize) });
 
-      for (const key of listResult。keys) {
+      for (const key of listResult.keys) {
         // 跳过 banPath 中的路径
-        if (!banPath。includes(key。name)) {
-          if (processedCount >= skip && Object。keys(mappings)。length < pageSize) {
-            const value = await KV_BINDING。get(key。name， { type: "json" });
-            mappings[key。name] = value;
+        if (!banPath.includes(key.name)) {
+          if (processedCount >= skip && Object.keys(mappings).length < pageSize) {
+            const value = await KV_BINDING.get(key.name, { type: "json" });
+            mappings[key.name] = value;
           }
           processedCount++;
         }
       }
 
-      cursor = listResult。cursor;
+      cursor = listResult.cursor;
       if (count === null && cursor) {
-        const remaining = await KV_BINDING。list({ cursor， limit: 1000 });
+        const remaining = await KV_BINDING.list({ cursor, limit: 1000 });
         // 计算剩余有效记录数（排除 banPath）
-        processedCount += remaining。keys。filter(key => !banPath。includes(key。name))。length;
-        cursor = remaining。cursor;
+        processedCount += remaining.keys.filter(key => !banPath.includes(key.name)).length;
+        cursor = remaining.cursor;
       }
     } while (cursor && Object.keys(mappings).length < pageSize);
 
@@ -485,7 +485,7 @@ export default {
         <h1 class="title">${mapping。name ? mapping。name : '微信二维码'}</h1>
         <p class="notice">请长按识别下方二维码</p>
         <img class="qr-code" src="${mapping。qrCodeData}" alt="微信群二维码">
-        <p class="footer">二维码失效请添加作者微信weilizhi更新</p>
+        <p class="footer">二维码失效请联系作者微信weilizhi更新</p>
     </div>
 </body>
 </html>`;
@@ -512,15 +512,15 @@ export default {
     KV_BINDING = env。KV_BINDING;
     const result = await getExpiringMappings();
 
-    console.log(`Cron job report: Found ${result.expired.length} expired mappings`);
-    if (result.expired.length > 0) {
-      console.log('Expired mappings:', JSON.stringify(result.expired, null, 2));
+    console。log(`Cron job report: Found ${result。expired。length} expired mappings`);
+    if (result。expired。length > 0) {
+      console。log('Expired mappings:'， JSON。stringify(result。expired， null， 2));
     }
 
-    console.log(`Found ${result.expiring.length} mappings expiring in 2 days`);
-    if (result.expiring.length > 0) {
-      console.log('Expiring soon mappings:', JSON.stringify(result.expiring, null, 2));
+    console。log(`Found ${result。expiring。length} mappings expiring 2 天之内`);
+    if (result。expiring。length > 0) {
+      console。log('Expiring soon mappings:'， JSON。stringify(result。expiring， null， 2));
     }
-  },
+  }，
 
 };
