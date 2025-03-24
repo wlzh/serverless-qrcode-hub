@@ -1,75 +1,75 @@
 let KV_BINDING;
 let DB;
 const banPath = [
-  'login', 'admin', '__total_count',
+  'login'， 'admin'， '__total_count'，
   // static files
-  'admin.html', 'login.html',
-  'daisyui@5.css', 'tailwindcss@4.js',
-  'qr-code-styling.js', 'zxing.js',
-  'robots.txt', 'wechat.svg',
-  'favicon.svg',
+  'admin.html'， 'login.html'，
+  'daisyui@5.css'， 'tailwindcss@4.js'，
+  'qr-code-styling.js'， 'zxing.js'，
+  'robots.txt'， 'wechat.svg'，
+  'favicon.svg'，
 ];
 
 // 数据库初始化
 async function initDatabase() {
   // 创建表
-  await DB.prepare(`
+  await DB。prepare(`
     CREATE TABLE IF NOT EXISTS mappings (
       path TEXT PRIMARY KEY,
-      target TEXT NOT NULL,
+      target TEXT NOT NULL，
       name TEXT,
       expiry TEXT,
       enabled INTEGER DEFAULT 1,
       created_at TEXT DEFAULT CURRENT_TIMESTAMP
     )
-  `).run();
+  `)。run();
 
   // 检查是否需要添加新列
-  const tableInfo = await DB.prepare("PRAGMA table_info(mappings)").all();
-  const columns = tableInfo.results.map(col => col.name);
+  const tableInfo = await DB。prepare("PRAGMA table_info(mappings)")。all();
+  const columns = tableInfo。results。map(col => col。name);
 
   // 添加 isWechat 列（如果不存在）
-  if (!columns.includes('isWechat')) {
-    await DB.prepare(`
+  if (!columns。includes('isWechat')) {
+    await DB。prepare(`
       ALTER TABLE mappings 
       ADD COLUMN isWechat INTEGER DEFAULT 0
-    `).run();
+    `)。run();
   }
 
   // 添加 qrCodeData 列（如果不存在）
-  if (!columns.includes('qrCodeData')) {
-    await DB.prepare(`
+  if (!columns。includes('qrCodeData')) {
+    await DB。prepare(`
       ALTER TABLE mappings 
       ADD COLUMN qrCodeData TEXT
-    `).run();
+    `)。run();
   }
 
   // 添加索引
-  await DB.prepare(`
+  await DB。prepare(`
     CREATE INDEX IF NOT EXISTS idx_expiry ON mappings(expiry)
-  `).run();
+  `)。run();
 
-  await DB.prepare(`
+  await DB。prepare(`
     CREATE INDEX IF NOT EXISTS idx_created_at ON mappings(created_at)
-  `).run();
+  `)。run();
 
   // 组合索引：用于启用状态和过期时间的组合查询
-  await DB.prepare(`
+  await DB。prepare(`
     CREATE INDEX IF NOT EXISTS idx_enabled_expiry ON mappings(enabled, expiry)
-  `).run();
+  `)。run();
 }
 
 // Cookie 相关函数
-function verifyAuthCookie(request, env) {
-  const cookie = request.headers.get('Cookie') || '';
-  const authToken = cookie.split(';').find(c => c.trim().startsWith('token='));
+function verifyAuthCookie(request， env) {
+  const cookie = request。headers。get('Cookie') || '';
+  const authToken = cookie。split(';')。find(c => c。trim()。startsWith('token='));
   if (!authToken) return false;
-  return authToken.split('=')[1].trim() === env.PASSWORD;
+  return authToken。split('=')[1]。trim() === env。PASSWORD;
 }
 
 function setAuthCookie(password) {
   return {
-    'Set-Cookie': `token=${password}; Path=/; HttpOnly; SameSite=Strict; Max-Age=86400`,
+    'Set-Cookie': `token=${password}; Path=/; HttpOnly; SameSite=Strict; Max-Age=86400`，
     'Content-Type': 'application/json'
   };
 }
@@ -684,35 +684,35 @@ export default {
 <body>
     <div class="container">
         <img class="wechat-icon" src="wechat.svg" alt="WeChat">
-        <h1 class="title">${mapping.name ? mapping.name : '微信二维码'}</h1>
+        <h1 class="title">${mapping。name ? mapping。name : '微信二维码'}</h1>
         <p class="notice">请长按识别下方二维码</p>
-        <img class="qr-code" src="${mapping.qrCodeData}" alt="微信群二维码">
-        <p class="footer">二维码失效请联系作者更新</p>
+        <img class="qr-code" src="${mapping。qrCodeData}" alt="微信群二维码">
+        <p class="footer">二维码失效请联系微信weilizhi更新</p>
     </div>
 </body>
 </html>`;
-            return new Response(wechatHtml, {
+            return new Response(wechatHtml， {
               headers: {
-                'Content-Type': 'text/html;charset=UTF-8',
+                'Content-Type': 'text/html;charset=UTF-8'，
                 'Cache-Control': 'no-store'
               }
             });
           }
 
           // 如果不是微信二维码，执行普通重定向
-          return Response.redirect(mapping.target, 302);
+          return Response。redirect(mapping。target， 302);
         }
-        return new Response('Not Found', { status: 404 });
+        return new Response('Not Found'， { status: 404 });
       } catch (error) {
-        console.error('Redirect error:', error);
-        return new Response('Internal Server Error', { status: 500 });
+        console。error('Redirect error:'， error);
+        return new Response('Internal Server Error'， { status: 500 });
       }
     }
-  },
+  }，
 
-  async scheduled(controller, env, ctx) {
-    KV_BINDING = env.KV_BINDING;
-    DB = env.DB;
+  async scheduled(controller， env， ctx) {
+    KV_BINDING = env。KV_BINDING;
+    DB = env。DB;
     
     // 初始化数据库
     await initDatabase();
