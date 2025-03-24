@@ -1,10 +1,6 @@
 # serverless-qrcode-hub
 
-苦于微信群聊二维码频繁变动，开发这个能生成永久二维码的工具，**不需要服务器**。基于 Cloudflare Workers 和 D1 实现。
-
-> 旧版使用的 KV 的免费额度太少，新版本改为基于 D1 存储，500万次读取够用了，建议使用旧版的及时升级，基于 KV 的最后版本是 v1.2.0: [README.v1.md](./README.v1.md)（不建议再使用）
->
-> 旧版 KV 迁移到新版的指南: [MIGRATE.md](./MIGRATE.md)
+苦于微信群聊二维码频繁变动，开发这个能生成永久二维码的工具，**不需要服务器**。基于 Cloudflare Workers 和 KV 存储实现。
 
 ## 功能特性
 
@@ -51,14 +47,13 @@
 
 ## 使用步骤
 
-1. 登录 Cloudflare 并创建 D1 SQL 数据库
+1. 登录 Cloudflare 并创建 KV 命名空间
 
-   ![](./images/1_1.png)
-   ![](./images/1_2.png)
+   ![](./images/1.jpg)
 
-2. 复制 D1 SQL 数据库 ID
+2. 复制 KV 命名空间 ID
 
-   ![](./images/2_1.png)
+   ![](./images/2.jpg)
 
 3. 回到 GitHub 并 Fork 仓库
 
@@ -66,11 +61,11 @@
 
 4. 在 GitHub 打开你 Fork 的仓库的 `wrangler.toml` 文件，点击图中的按钮编辑
 
-   ![](./images/4_1.png)
+   ![](./images/4.jpg)
 
-5. 将 `d1_databases` 下的 `database_id` 内容替换为你自己拷贝的 D1 SQL 数据库 ID
+5. 将 `kv_namespaces` 下的 `id` 内容替换为你的 KV 命名空间 ID
 
-   ![](./images/5_1.png)
+   ![](./images/5.jpg)
 
 6. 回到 Cloudflare 并创建 Worker
 

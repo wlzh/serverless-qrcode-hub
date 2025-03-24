@@ -35,7 +35,7 @@
     <style>
         body {
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-            max-width: 1200px;
+            max-width: 1400px;
             margin: 20px auto;
             padding: 0 20px;
         }
@@ -46,6 +46,61 @@
 
         #qr-container.switching canvas {
             opacity: 0;
+        }
+
+        /* 表格样式优化 */
+        .table-responsive table {
+            table-layout: fixed;
+            width: 100%;
+        }
+
+        .table-responsive td, .table-responsive th {
+            vertical-align: top;
+            word-break: break-word;
+            padding: 0.75rem 0.5rem; /* 调整单元格内边距 */
+        }
+
+        /* 调整各列宽度 */
+        .table-responsive th:nth-child(1), /* 条目名称 */
+        .table-responsive td:nth-child(1) {
+            width: 15%;
+        }
+
+        .table-responsive th:nth-child(2), /* 短链名 */
+        .table-responsive td:nth-child(2) {
+            width: 12%;
+        }
+
+        .table-responsive th:nth-child(3), /* 目标URL */
+        .table-responsive td:nth-child(3) {
+            width: 28%;
+            white-space: normal;
+            overflow-wrap: break-word;
+        }
+
+        .table-responsive th:nth-child(4), /* 有效日期 */
+        .table-responsive td:nth-child(4) {
+            width: 12%;
+        }
+
+        .table-responsive th:nth-child(5), /* 状态 */
+        .table-responsive td:nth-child(5) {
+            width: 13%;
+        }
+
+        .table-responsive th:nth-child(6), /* 操作 */
+        .table-responsive td:nth-child(6) {
+            width: 20%;
+        }
+
+        /* 编辑模式下的行样式 */
+        .table-responsive tr.editing {
+            background-color: rgba(var(--p), 0.1);
+        }
+
+        .table-responsive tr.editing td {
+            padding-top: 1rem;
+            padding-bottom: 1rem;
         }
 
         /* 移动端响应式样式 */
@@ -61,48 +116,120 @@
 
             /* 表格响应式处理 */
             .table-responsive {
-                display: block;
-                width: 100%;
                 overflow-x: auto;
                 -webkit-overflow-scrolling: touch;
+                position: relative;
+                margin: 0 -1rem; /* 抵消卡片内边距 */
+                padding: 0 1rem;
+                width: calc(100% + 2rem);
             }
 
-            /* 操作按钮组响应式处理 */
-            .btn-group-responsive {
-                display: flex;
-                flex-wrap: wrap;
-                gap: 0.5rem;
+            /* 表格基础样式调整 */
+            .table-responsive table {
+                min-width: 800px; /* 确保在小屏幕上可以横向滚动 */
+                font-size: 0.875rem; /* 稍微减小字体大小 */
             }
 
-            .btn-group-responsive .btn {
-                flex: 1;
-                min-width: auto;
-                white-space: nowrap;
-            }
-
-            /* 模态框响应式处理 */
-            .modal-box {
-                max-width: 90vw;
-                padding: 1rem;
-            }
-
-            /* 表单响应式处理 */
-            .form-grid {
-                grid-template-columns: 1fr !important;
-                gap: 1rem !important;
-            }
-
-            /* 导航栏响应式处理 */
-            .navbar {
-                flex-wrap: wrap;
+            /* 调整单元格内边距 */
+            .table-responsive td,
+            .table-responsive th {
                 padding: 0.5rem;
+                white-space: normal;
+                line-height: 1.4;
             }
 
-            .navbar>div {
-                width: 100%;
-                justify-content: center;
-                margin: 0.5rem 0;
+            /* 优化各列宽度 */
+            .table-responsive th:nth-child(1), /* 条目名称 */
+            .table-responsive td:nth-child(1) {
+                min-width: 120px;
+                max-width: 150px;
             }
+
+            .table-responsive th:nth-child(2), /* 短链名 */
+            .table-responsive td:nth-child(2) {
+                min-width: 100px;
+                max-width: 120px;
+            }
+
+            .table-responsive th:nth-child(3), /* 目标URL */
+            .table-responsive td:nth-child(3) {
+                min-width: 200px;
+                max-width: 300px;
+            }
+
+            .table-responsive th:nth-child(4), /* 有效日期 */
+            .table-responsive td:nth-child(4) {
+                min-width: 100px;
+                max-width: 120px;
+            }
+
+            .table-responsive th:nth-child(5), /* 状态 */
+            .table-responsive td:nth-child(5) {
+                min-width: 100px;
+                max-width: 120px;
+            }
+
+            .table-responsive th:nth-child(6), /* 操作 */
+            .table-responsive td:nth-child(6) {
+                min-width: 150px;
+                position: sticky;
+                right: 0;
+                background: var(--b1);
+                box-shadow: -4px 0 6px -2px rgba(0, 0, 0, 0.1);
+            }
+
+            /* 编辑模式下的样式优化 */
+            .table-responsive tr.editing td {
+                padding: 0.75rem 0.5rem;
+            }
+
+            .table-responsive tr.editing input,
+            .table-responsive tr.editing textarea {
+                font-size: 0.875rem;
+                padding: 0.25rem 0.5rem;
+            }
+
+            /* 添加横向滚动提示 */
+            .table-responsive::after {
+                content: '';
+                position: absolute;
+                top: 0;
+                right: 0;
+                bottom: 0;
+                width: 30px;
+                background: linear-gradient(to right, transparent, rgba(var(--b1), 0.1));
+                pointer-events: none;
+            }
+
+            /* 优化操作按钮组 */
+            .table-responsive .join {
+                flex-wrap: nowrap;
+                gap: 0.25rem;
+            }
+
+            .table-responsive .join .btn {
+                padding-left: 0.75rem;
+                padding-right: 0.75rem;
+            }
+        }
+
+        /* 添加滚动条样式美化 */
+        .table-responsive::-webkit-scrollbar {
+            height: 6px;
+        }
+
+        .table-responsive::-webkit-scrollbar-track {
+            background: rgba(var(--b2), 0.1);
+            border-radius: 3px;
+        }
+
+        .table-responsive::-webkit-scrollbar-thumb {
+            background: rgba(var(--p), 0.2);
+            border-radius: 3px;
+        }
+
+        .table-responsive::-webkit-scrollbar-thumb:hover {
+            background: rgba(var(--p), 0.3);
         }
 
         /* 优化表格过渡效果 */
@@ -292,7 +419,7 @@
                         </div>
                         <div>
                             <label for="newExpiry" class="label">
-                                <span class="label-text">失效日期</span>
+                                <span class="label-text">有效日期</span>
                             </label>
                             <input type="date" id="newExpiry" class="input input-bordered w-full">
                         </div>
@@ -363,39 +490,6 @@
                 <span class="loading loading-spinner loading-lg"></span>
             </div>
 
-            <!-- 新的添加表单区域 -->
-            <div class="card bg-base-200 p-4 mb-4">
-                <div class="grid grid-cols-1 md:grid-cols-5 gap-4 form-grid">
-                    <div>
-                        <label for="newName" class="floating-label">
-                            <span class="label-text">条目名称</span>
-                            <input type="text" id="newName" placeholder="条目名称，例:音乐群1" class="input input-md w-full">
-                        </label>
-                    </div>
-                    <div>
-                        <label for="newPath" class="floating-label">
-                            <span class="label-text">短链名</span>
-                            <input type="text" id="newPath" placeholder="短链名，例:music1" class="input input-md w-full">
-                        </label>
-                    </div>
-                    <div>
-                        <label for="newTarget" class="floating-label">
-                            <span class="label-text">目标URL</span>
-                            <input type="text" id="newTarget" placeholder="目标URL，例:https://x.com/xxx"
-                                class="input input-md w-full">
-                        </label>
-                    </div>
-                    <div>
-                        <label for="newExpiry" class="floating-label">
-                            <span class="label-text">失效日期</span>
-                            <input type="date" id="newExpiry" class="input input-md w-full mb-2">
-                        </label>
-                    </div>
-
-                    <button id="addMappingBtn" class="btn btn-primary w-full">添加短链二维码</button>
-                </div>
-            </div>
-
             <div class="overflow-x-auto table-responsive">
                 <!-- 添加骨架屏 -->
                 <div id="skeleton" class="hidden">
@@ -428,11 +522,11 @@
                 <table class="table table-zebra w-full">
                     <thead>
                         <tr>
-                            <th class="w-1/5">条目名称</th>
-                            <th class="w-1/5">短链名</th>
-                            <th class="w-1/5">目标 URL</th>
-                            <th class="w-1/5">失效日期</th>
-                            <th class="w-1/5">操作</th>
+                            <th class="w-[15%]">条目名称</th>
+                            <th class="w-[12%]">短链名</th>
+                            <th class="w-[28%]">目标 URL</th>
+                            <th class="w-[15%]">有效日期</th>
+                            <th class="w-[30%]">状态</th>
                         </tr>
                     </thead>
                     <tbody id="mappingsTableBody">
@@ -542,19 +636,43 @@
                 }
 
                 // 修改筛选按钮的点击事件
-                document.getElementById('showAllBtn').addEventListener('click', () => {
-                    updateFilterButtonStates('showAllBtn');
-                    loadMappings();
+                document.getElementById('showAllBtn').addEventListener('click', async () => {
+                    currentPage = 1; // 重置页码
+                    const btn = document.getElementById('showAllBtn');
+                    const expiringBtn = document.getElementById('showExpiringBtn');
+                    const expiredBtn = document.getElementById('showExpiredBtn');
+                    
+                    btn.classList.add('btn-primary');
+                    expiringBtn.classList.remove('btn-warning');
+                    expiredBtn.classList.remove('btn-error');
+                    
+                    await loadMappings();
                 });
 
-                document.getElementById('showExpiringBtn').addEventListener('click', () => {
-                    updateFilterButtonStates('showExpiringBtn');
-                    loadExpiringMappings('expiring');
+                document.getElementById('showExpiringBtn').addEventListener('click', async () => {
+                    currentPage = 1; // 重置页码
+                    const btn = document.getElementById('showExpiringBtn');
+                    const allBtn = document.getElementById('showAllBtn');
+                    const expiredBtn = document.getElementById('showExpiredBtn');
+                    
+                    btn.classList.add('btn-warning');
+                    allBtn.classList.remove('btn-primary');
+                    expiredBtn.classList.remove('btn-error');
+                    
+                    await loadExpiringMappings('expiring');
                 });
 
-                document.getElementById('showExpiredBtn').addEventListener('click', () => {
-                    updateFilterButtonStates('showExpiredBtn');
-                    loadExpiringMappings('expired');
+                document.getElementById('showExpiredBtn').addEventListener('click', async () => {
+                    currentPage = 1; // 重置页码
+                    const btn = document.getElementById('showExpiredBtn');
+                    const allBtn = document.getElementById('showAllBtn');
+                    const expiringBtn = document.getElementById('showExpiringBtn');
+                    
+                    btn.classList.add('btn-error');
+                    allBtn.classList.remove('btn-primary');
+                    expiringBtn.classList.remove('btn-warning');
+                    
+                    await loadExpiringMappings('expired');
                 });
 
                 // 添加微信二维码开关事件监听
@@ -848,7 +966,7 @@
 
                     const data = await response.json();
                     allMappings = Object.entries(data.mappings);
-
+                    
                     // 等待一小段时间再更新DOM
                     await new Promise(resolve => setTimeout(resolve, 300));
 
@@ -859,8 +977,11 @@
                     currentPage = data.page;
                     const totalPages = data.totalPages;
                     document.getElementById('currentPage').textContent = currentPage;
-                    document.getElementById('prevPage').disabled = currentPage === 1;
-                    document.getElementById('nextPage').disabled = currentPage === totalPages;
+                    document.getElementById('prevPage').disabled = currentPage <= 1;
+                    document.getElementById('nextPage').disabled = currentPage >= totalPages;
+
+                    // 设置页面大小选择器的当前值
+                    document.getElementById('pageSize').value = pageSize;
 
                 } catch (error) {
                     console.error('加载数据失败:', error);
@@ -879,11 +1000,8 @@
 
                 const fragment = document.createDocumentFragment();
 
-                const start = (currentPage - 1) * pageSize;
-                const end = Math.min(start + pageSize, allMappings.length);
-
-                for (let i = start; i < end; i++) {
-                    const [path, mapping] = allMappings[i];
+                // 直接遍历所有映射
+                for (const [path, mapping] of allMappings) {
                     const row = createMappingRow(path, mapping);
                     fragment.appendChild(row);
                 }
@@ -1031,6 +1149,18 @@
                 // 设置 URL 文本
                 urlInput.value = url;
 
+                // 从 localStorage 获取保存的设置
+                const savedShowLogo = localStorage.getItem('qr-show-logo');
+                const savedDotsStyle = localStorage.getItem('qr-dots-style');
+                
+                // 应用保存的设置
+                if (savedShowLogo !== null) {
+                    showLogoCheckbox.checked = savedShowLogo === 'true';
+                }
+                if (savedDotsStyle) {
+                    dotsStyleSelect.value = savedDotsStyle;
+                }
+
                 // 基础 QR 配置
                 const getQRConfig = (showLogo, dotsType) => ({
                     width: 300,
@@ -1076,6 +1206,10 @@
                         currentQRCode = new QRCodeStyling(getQRConfig(showLogoCheckbox.checked, dotsStyleSelect.value));
                         currentQRCode.append(container);
 
+                        // 保存设置到 localStorage
+                        localStorage.setItem('qr-show-logo', showLogoCheckbox.checked);
+                        localStorage.setItem('qr-dots-style', dotsStyleSelect.value);
+
                         requestAnimationFrame(() => {
                             container.classList.remove('switching');
                         });
@@ -1105,6 +1239,17 @@
             // 修改创建短链二维码行的函数中的二维码按钮部分
             function createMappingRow(path, mapping) {
                 const row = document.createElement('tr');
+                
+                // 保存完整的原始数据到 row 的 dataset
+                row.dataset.originalData = JSON.stringify({
+                    name: mapping.name || '',
+                    path: path,
+                    target: mapping.target,
+                    expiry: mapping.expiry || '',
+                    enabled: mapping.enabled,
+                    isWechat: mapping.isWechat,
+                    qrCodeData: mapping.qrCodeData
+                });
 
                 // 使用数组和 map 来优化单元格创建
                 const cellsData = [
@@ -1114,8 +1259,13 @@
                     { text: mapping.expiry || '永久有效', data: mapping.expiry || '' }
                 ];
 
-                cellsData.forEach(({ text, data }) => {
+                cellsData.forEach(({ text, data }, index) => {
                     const cell = document.createElement('td');
+                    if (index === 2) { // 目标URL单元格
+                        cell.classList.add('whitespace-normal', 'break-words', 'max-w-xs');
+                        cell.style.wordBreak = 'break-all';
+                        cell.style.minWidth = '200px';
+                    }
                     cell.textContent = text;
                     cell.dataset.original = data;
                     row.appendChild(cell);
@@ -1159,76 +1309,67 @@
             async function toggleEditMode(row) {
                 const isEditing = row.classList.toggle('editing');
                 const cells = row.cells;
-                const originalPath = cells[1].dataset.original;
+                const originalData = JSON.parse(row.dataset.originalData);
 
                 if (isEditing) {
-                    // 获取当前行的数据
-                    const currentData = {
-                        name: cells[0].dataset.original,
-                        path: cells[1].dataset.original,
-                        target: cells[2].dataset.original,
-                        expiry: cells[3].dataset.original,
-                        enabled: cells[4].querySelector('.badge-success') !== null,
-                        isWechat: cells[4].querySelector('.badge-info') !== null
-                    };
-
-                    // 获取原始映射数据，检查是否有二维码数据
-                    let hasQRCodeData = false;
                     try {
-                        const response = await fetch(`/api/mapping?path=${originalPath}`);
-                        if (response.ok) {
-                            const data = await response.json();
-                            hasQRCodeData = !!data.qrCodeData;
+                        // 获取当前行的完整数据
+                        const response = await fetch(`/api/mapping?path=${originalData.path}`);
+                        if (!response.ok) {
+                            throw new Error('获取数据失败');
                         }
+                        const mappingData = await response.json();
+
+                        // 切换到编辑模式
+                        cells[0].innerHTML = `<input type="text" class="input input-bordered input-sm w-full" value="${mappingData.name || ''}">`;
+                        cells[1].innerHTML = `<input type="text" class="input input-bordered input-sm w-full" value="${mappingData.path}">`;
+                        cells[2].innerHTML = `<textarea class="textarea textarea-bordered textarea-sm w-full h-24" style="resize:none; word-break:break-all;">${mappingData.target}</textarea>`;
+                        cells[3].innerHTML = `<input type="date" class="input input-bordered input-sm w-full" value="${mappingData.expiry || ''}">`;
+                        
+                        // 状态切换
+                        cells[4].innerHTML = `
+                            <div class="flex flex-col gap-2">
+                                <label class="cursor-pointer label justify-start gap-2">
+                                    <input type="checkbox" class="toggle toggle-primary toggle-sm" ${mappingData.enabled ? 'checked' : ''}>
+                                    <span class="label-text">启用</span>
+                                </label>
+                                <label class="cursor-pointer label justify-start gap-2">
+                                    <input type="checkbox" class="toggle toggle-primary toggle-sm" ${mappingData.isWechat ? 'checked' : ''}>
+                                    <span class="label-text">微信</span>
+                                </label>
+                            </div>
+                        `;
+
+                        // 修改按钮组
+                        const actionsCell = cells[5];
+                        actionsCell.innerHTML = `
+                            <div class="join">
+                                <button class="join-item btn btn-success btn-sm">保存</button>
+                                <button class="join-item btn btn-primary btn-sm">取消</button>
+                                <button class="join-item btn btn-info btn-sm">二维码</button>
+                            </div>
+                        `;
+
+                        // 重新绑定事件监听器
+                        const [saveBtn, cancelBtn, qrBtn] = actionsCell.querySelectorAll('button');
+                        saveBtn.onclick = () => saveEdit(row);
+                        cancelBtn.onclick = () => restoreRow(row);
+                        qrBtn.onclick = () => generateQRForMapping(window.location.origin + '/' + originalData.path, originalData.path);
                     } catch (error) {
-                        console.error('获取映射数据失败:', error);
+                        console.error('获取数据失败:', error);
+                        showAlert('获取数据失败，请重试');
+                        row.classList.remove('editing');
                     }
-
-                    // 切换到编辑模式
-                    cells[0].innerHTML = `<input type="text" class="input input-bordered input-sm w-full" value="${currentData.name}">`;
-                    cells[1].innerHTML = `<input type="text" class="input input-bordered input-sm w-full" value="${currentData.path}">`;
-                    cells[2].innerHTML = `<input type="text" class="input input-bordered input-sm w-full" value="${currentData.target}">`;
-                    cells[3].innerHTML = `<input type="date" class="input input-bordered input-sm w-full" value="${currentData.expiry}">`;
-                    cells[4].innerHTML = `
-                        <div class="flex flex-col gap-2">
-                            <label class="cursor-pointer label justify-start gap-2">
-                                <input type="checkbox" class="toggle toggle-primary toggle-sm" ${currentData.enabled ? 'checked' : ''}>
-                                <span class="label-text">启用</span>
-                            </label>
-                            ${hasQRCodeData ? `
-                            <label class="cursor-pointer label justify-start gap-2">
-                                <input type="checkbox" class="toggle toggle-primary toggle-sm" ${currentData.isWechat ? 'checked' : ''}>
-                                <span class="label-text">微信</span>
-                            </label>
-                            ` : ''}
-                        </div>
-                    `;
-
-                    // 修改按钮组
-                    const actionsCell = cells[5];
-                    actionsCell.innerHTML = `
-                        <div class="join">
-                            <button class="join-item btn btn-success btn-sm">保存</button>
-                            <button class="join-item btn btn-primary btn-sm">取消</button>
-                            <button class="join-item btn btn-info btn-sm">二维码</button>
-                        </div>
-                    `;
-
-                    // 重新绑定事件监听器
-                    const [saveBtn, cancelBtn, qrBtn] = actionsCell.querySelectorAll('button');
-                    saveBtn.onclick = () => saveEdit(row);
-                    cancelBtn.onclick = () => restoreRow(row);
-                    qrBtn.onclick = () => generateQRForMapping(window.location.origin + '/' + cells[1].dataset.original, cells[1].dataset.original);
                 }
             }
 
             async function saveEdit(row) {
                 const cells = row.cells;
-                const originalPath = cells[1].dataset.original;
+                const rowOriginalData = JSON.parse(row.dataset.originalData);
 
                 const newName = cells[0].querySelector('input').value;
                 const newPath = cells[1].querySelector('input').value;
-                const newTarget = cells[2].querySelector('input').value;
+                const newTarget = cells[2].querySelector('textarea').value;
                 const newExpiry = cells[3].querySelector('input').value;
                 const enabledToggle = cells[4].querySelector('input[type="checkbox"]');
                 const isWechatToggle = cells[4].querySelectorAll('input[type="checkbox"]')[1];
@@ -1237,12 +1378,12 @@
 
                 // 检查是否有任何修改
                 const hasChanges =
-                    newName !== cells[0].dataset.original ||
-                    newPath !== cells[1].dataset.original ||
-                    newTarget !== cells[2].dataset.original ||
-                    newExpiry !== cells[3].dataset.original ||
-                    newEnabled !== (cells[4].querySelector('.badge-success') !== null) ||
-                    (isWechatToggle && newIsWechat !== (cells[4].querySelector('.badge-info') !== null));
+                    newName !== rowOriginalData.name ||
+                    newPath !== rowOriginalData.path ||
+                    newTarget !== rowOriginalData.target ||
+                    newExpiry !== rowOriginalData.expiry ||
+                    newEnabled !== rowOriginalData.enabled ||
+                    (isWechatToggle && newIsWechat !== rowOriginalData.isWechat);
 
                 if (!hasChanges) {
                     restoreRow(row);
@@ -1251,29 +1392,26 @@
 
                 try {
                     // 获取原有数据
-                    const response = await fetch(`/api/mapping?path=${originalPath}`);
-                    let qrCodeData = null;
-                    if (response.ok) {
-                        const data = await response.json();
-                        qrCodeData = data.qrCodeData;
+                    const response = await fetch(`/api/mapping?path=${rowOriginalData.path}`);
+                    if (!response.ok) {
+                        throw new Error('获取原有数据失败');
                     }
+                    const serverData = await response.json();
 
                     // 保存更改
-                    const newMapping = {
-                        name: newName,
-                        path: newPath,
-                        target: newTarget,
-                        expiry: newExpiry,
-                        enabled: newEnabled,
-                        isWechat: newIsWechat && !!qrCodeData,
-                        qrCodeData: qrCodeData,
-                        originalPath: originalPath
-                    };
-
                     const updateResponse = await fetch('/api/mapping', {
                         method: 'PUT',
                         headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify(newMapping)
+                        body: JSON.stringify({
+                            originalPath: rowOriginalData.path,
+                            path: newPath,
+                            target: newTarget,
+                            name: newName,
+                            expiry: newExpiry || null,
+                            enabled: newEnabled,
+                            isWechat: newIsWechat,
+                            qrCodeData: serverData.qrCodeData // 使用服务器返回的原始二维码数据
+                        })
                     });
 
                     if (!updateResponse.ok) {
@@ -1304,20 +1442,21 @@
 
             function restoreRow(row) {
                 const cells = row.cells;
-                cells[0].textContent = cells[0].dataset.original;
-                cells[1].textContent = cells[1].dataset.original;
-                cells[2].textContent = cells[2].dataset.original;
-                cells[3].textContent = cells[3].dataset.original || '永久有效';
+                const originalData = JSON.parse(row.dataset.originalData);
+
+                // 恢复各个单元格的内容
+                cells[0].textContent = originalData.name || '-';
+                cells[1].textContent = originalData.path;
+                cells[2].textContent = originalData.target;
+                cells[3].textContent = originalData.expiry || '永久有效';
 
                 // 恢复状态列
-                const isEnabled = cells[4].querySelector('.badge-success') !== null;
-                const isWechat = cells[4].querySelector('.badge-info') !== null;
                 cells[4].innerHTML = `
                     <div class="flex items-center gap-2">
-                        <span class="badge ${isEnabled ? 'badge-success' : 'badge-error'}">
-                            ${isEnabled ? '启用' : '禁用'}
+                        <span class="badge ${originalData.enabled ? 'badge-success' : 'badge-error'}">
+                            ${originalData.enabled ? '启用' : '禁用'}
                         </span>
-                        ${isWechat ? '<span class="badge badge-info">微信</span>' : ''}
+                        ${originalData.isWechat ? '<span class="badge badge-info">微信</span>' : ''}
                     </div>
                 `;
 
@@ -1334,8 +1473,8 @@
                 // 重新绑定事件监听器
                 const [editBtn, deleteBtn, qrBtn] = actionsCell.querySelectorAll('button');
                 editBtn.onclick = () => toggleEditMode(row);
-                deleteBtn.onclick = () => deleteMapping(cells[1].dataset.original);
-                qrBtn.onclick = () => generateQRForMapping(window.location.origin + '/' + cells[1].dataset.original, cells[1].dataset.original);
+                deleteBtn.onclick = () => deleteMapping(originalData.path);
+                qrBtn.onclick = () => generateQRForMapping(window.location.origin + '/' + originalData.path, originalData.path);
 
                 row.classList.remove('editing');
             }
@@ -1433,6 +1572,55 @@
             let currentPage = 1;
             let pageSize = 10;
 
+            // 添加分页和每页显示数量的事件监听器
+            document.getElementById('nextPage').addEventListener('click', async () => {
+                const expiringBtn = document.getElementById('showExpiringBtn');
+                const expiredBtn = document.getElementById('showExpiredBtn');
+                
+                currentPage++;
+                
+                if (expiringBtn.classList.contains('btn-warning')) {
+                    await loadExpiringMappings('expiring');
+                } else if (expiredBtn.classList.contains('btn-error')) {
+                    await loadExpiringMappings('expired');
+                } else {
+                    await loadMappings();
+                }
+            });
+
+            document.getElementById('prevPage').addEventListener('click', async () => {
+                if (currentPage > 1) {
+                    currentPage--;
+                    const expiringBtn = document.getElementById('showExpiringBtn');
+                    const expiredBtn = document.getElementById('showExpiredBtn');
+                    
+                    if (expiringBtn.classList.contains('btn-warning')) {
+                        await loadExpiringMappings('expiring');
+                    } else if (expiredBtn.classList.contains('btn-error')) {
+                        await loadExpiringMappings('expired');
+                    } else {
+                        await loadMappings();
+                    }
+                }
+            });
+
+            document.getElementById('pageSize').addEventListener('change', async (e) => {
+                pageSize = parseInt(e.target.value);
+                currentPage = 1;
+                
+                // 根据当前视图状态重新加载数据
+                const expiringBtn = document.getElementById('showExpiringBtn');
+                const expiredBtn = document.getElementById('showExpiredBtn');
+                
+                if (expiringBtn.classList.contains('btn-warning')) {
+                    await loadExpiringMappings('expiring');
+                } else if (expiredBtn.classList.contains('btn-error')) {
+                    await loadExpiringMappings('expired');
+                } else {
+                    await loadMappings();
+                }
+            });
+
             async function logout() {
                 try {
                     const response = await fetch('/api/logout', {
@@ -1462,47 +1650,152 @@
                 skeleton.classList.remove('hidden');
 
                 try {
-                    const response = await fetch('/api/expiring-mappings');
+                    const response = await fetch(`/api/expiring-mappings?page=${currentPage}&pageSize=${pageSize}`);
 
                     if (response.status === 401) {
                         window.location.href = '/login';
                         return;
                     }
 
-                    if (!response.ok) {
-                        throw new Error('加载数据失败');
-                    }
-
                     const data = await response.json();
-                    const mappings = data[type] || [];
-
-                    // 转换数据格式以适配现有的渲染逻辑
-                    allMappings = mappings.map(m => [m.path, {
-                        name: m.name,
-                        target: m.target,
-                        expiry: m.expiry
-                    }]);
-
-                    // 等待一小段时间再更新DOM
-                    await new Promise(resolve => setTimeout(resolve, 300));
+                    
+                    // 获取今天的日期（去除时间部分）
+                    const today = new Date();
+                    today.setHours(0, 0, 0, 0);
+                    
+                    // 根据类型和过期时间筛选数据
+                    const mappingsArray = data[type];
+                    
+                    // 确保日期比较的准确性
+                    mappingsArray.forEach(mapping => {
+                        const expiryDate = new Date(mapping.expiry);
+                        expiryDate.setHours(0, 0, 0, 0); // 只比较日期部分
+                        mapping.isExpired = expiryDate < today;
+                    });
+                    
+                    // 根据类型过滤数据
+                    const filteredMappings = type === 'expired' 
+                        ? mappingsArray.filter(m => m.isExpired)
+                        : mappingsArray.filter(m => !m.isExpired);
+                        
+                    const total = filteredMappings.length;
+                    
+                    // 计算当前页的数据
+                    const start = (currentPage - 1) * pageSize;
+                    const end = Math.min(start + pageSize, total);
+                    const currentPageData = filteredMappings.slice(start, end);
+                    
+                    // 清空表格
+                    tableBody.innerHTML = '';
+                    
+                    // 渲染当前页数据
+                    currentPageData.forEach(mapping => {
+                        const row = createMappingRow(mapping.path, {
+                            name: mapping.name,
+                            target: mapping.target,
+                            expiry: mapping.expiry,
+                            enabled: mapping.enabled,
+                            isWechat: mapping.isWechat,
+                            qrCodeData: mapping.qrCodeData
+                        });
+                        tableBody.appendChild(row);
+                    });
 
                     // 更新分页信息
-                    currentPage = 1;
-                    const totalPages = Math.ceil(allMappings.length / pageSize);
+                    const totalPages = Math.ceil(total / pageSize);
                     document.getElementById('currentPage').textContent = currentPage;
-                    document.getElementById('prevPage').disabled = currentPage === 1;
-                    document.getElementById('nextPage').disabled = currentPage === totalPages;
-
-                    // 清空并重新渲染表格
-                    renderCurrentPage();
+                    document.getElementById('prevPage').disabled = currentPage <= 1;
+                    document.getElementById('nextPage').disabled = currentPage >= totalPages || total === 0;
 
                 } catch (error) {
                     console.error('加载数据失败:', error);
                     showAlert('加载数据失败，请刷新页面重试');
                 } finally {
-                    // 隐藏骨架屏，显示表格内容
                     skeleton.classList.add('hidden');
                     tableBody.style.display = '';
+                }
+            }
+
+            // 在页面加载时初始化二维码设置
+            document.addEventListener('DOMContentLoaded', function() {
+                // 初始化二维码设置
+                const savedShowLogo = localStorage.getItem('qr-show-logo');
+                const savedDotsStyle = localStorage.getItem('qr-dots-style');
+                
+                // 设置显示logo复选框
+                if (savedShowLogo !== null) {
+                    document.getElementById('qr-show-logo').checked = savedShowLogo === 'true';
+                }
+                
+                // 设置点样式下拉框
+                if (savedDotsStyle) {
+                    document.getElementById('qr-dots-style').value = savedDotsStyle;
+                }
+                
+                // 添加设置变更监听器
+                document.getElementById('qr-show-logo').addEventListener('change', function(e) {
+                    localStorage.setItem('qr-show-logo', e.target.checked);
+                    // 如果二维码已经显示，则更新二维码
+                    if (qrCode) {
+                        updateQRCode();
+                    }
+                });
+                
+                document.getElementById('qr-dots-style').addEventListener('change', function(e) {
+                    localStorage.setItem('qr-dots-style', e.target.value);
+                    // 如果二维码已经显示，则更新二维码
+                    if (qrCode) {
+                        updateQRCode();
+                    }
+                });
+            });
+
+            // 更新生成二维码的函数，使用保存的设置
+            function updateQRCode() {
+                const url = document.getElementById('qr-url').value;
+                const showLogo = document.getElementById('qr-show-logo').checked;
+                const dotsStyle = document.getElementById('qr-dots-style').value;
+                
+                const options = {
+                    width: 240,
+                    height: 240,
+                    data: url,
+                    margin: 10,
+                    qrOptions: {
+                        typeNumber: 0,
+                        mode: 'Byte',
+                        errorCorrectionLevel: 'H'
+                    },
+                    imageOptions: {
+                        hideBackgroundDots: true,
+                        imageSize: 0.4,
+                        margin: 4
+                    },
+                    dotsOptions: {
+                        type: dotsStyle,
+                        color: '#000000'
+                    },
+                    backgroundOptions: {
+                        color: '#ffffff'
+                    }
+                };
+
+                if (showLogo) {
+                    options.image = '/wechat.svg';
+                }
+
+                // 如果已经存在二维码实例，先移除旧的
+                if (qrCode) {
+                    const container = document.getElementById('qr-container');
+                    container.classList.add('switching');
+                    
+                    setTimeout(() => {
+                        qrCode.update(options);
+                        container.classList.remove('switching');
+                    }, 200);
+                } else {
+                    qrCode = new QRCodeStyling(options);
+                    qrCode.append(document.getElementById('qr-container'));
                 }
             }
 
